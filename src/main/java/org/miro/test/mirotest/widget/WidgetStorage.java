@@ -31,7 +31,7 @@ public class WidgetStorage {
             ArrayList<Widget> sortedWidgets = new ArrayList<>(widgetMap.values());
             sortedWidgets.sort(Comparator.comparingInt(Widget::getZ).reversed());
             int nextZIndex = sortedWidgets.get(0).getZ() + 1;
-            widget.setZIndex(nextZIndex);
+            widget.setZ(nextZIndex);
         } else if (existZIndex(widget.getZ())) {
             layerHelper.moveWidgets(widget.getZ(), getAll());
         }
@@ -46,25 +46,27 @@ public class WidgetStorage {
         if (existingWidget == null ) {
             return false;
         }
+        widget.setId(id);
+        if (widget.getX() == null) {
+            widget.setX(existingWidget.getX());
+        }
+        if (widget.getY() == null) {
+            widget.setY(existingWidget.getY());
+        }
+        if (widget.getZ() == null) {
+            widget.setZ(existingWidget.getZ());
+        }
+        if (widget.getWidth() == null) {
+            widget.setWidth(existingWidget.getWidth());
+        }
+        if (widget.getHeight() == null) {
+            widget.setHeight(existingWidget.getHeight());
+        }
+        widget.setLastModified();
+        widgetMap.replace(id, widget);
         if (existZIndex(widget.getZ()) && !widget.getZ().equals(existingWidget.getZ())) {
             layerHelper.moveWidgets(widget.getZ(), getAll());
         }
-        if (widget.getX() != null) {
-            existingWidget.setXCoordinate(widget.getX());
-        }
-        if (widget.getY() != null) {
-            existingWidget.setYCoordinate(widget.getY());
-        }
-        if (widget.getZ() != null) {
-            existingWidget.setZIndex(widget.getZ());
-        }
-        if (widget.getWidth() != null) {
-            existingWidget.setWidth(widget.getWidth());
-        }
-        if (widget.getHeight() != null) {
-            existingWidget.setHeight(widget.getHeight());
-        }
-        existingWidget.setLastModified();
         return true;
     }
 

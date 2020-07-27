@@ -33,10 +33,10 @@ public class MirotestControllerTests {
     public void crudWidget() throws Exception {
         String uri = "/widgets";
         Widget widgetToCreate = new Widget();
-        widgetToCreate.setXCoordinate(10);
-        widgetToCreate.setYCoordinate(10);
+        widgetToCreate.setX(10);
+        widgetToCreate.setY(10);
         widgetToCreate.setHeight(1.0);
-        widgetToCreate.setZIndex(-5);
+        widgetToCreate.setZ(-5);
 
         String inputJson = mapToJson(widgetToCreate);
         mockMvc.perform(post(uri)
@@ -105,11 +105,11 @@ public class MirotestControllerTests {
     public void getWidgetsList() throws Exception {
         String uri = "/widgets";
         Widget widget = new Widget();
-        widget.setXCoordinate(10);
-        widget.setYCoordinate(10);
+        widget.setX(10);
+        widget.setY(10);
         widget.setHeight(1.0);
         widget.setWidth(1.0);
-        widget.setZIndex(-5);
+        widget.setZ(-5);
 
         String inputJson = mapToJson(widget);
         for (int i = 0; i < 10; i++) {

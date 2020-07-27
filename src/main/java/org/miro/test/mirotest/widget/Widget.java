@@ -53,15 +53,15 @@ public class Widget {
         this.id = id;
     }
 
-    public void setXCoordinate(Integer xCoordinate) {
+    public void setX(Integer xCoordinate) {
         this.x = xCoordinate;
     }
 
-    public void setYCoordinate(Integer yCoordinate) {
+    public void setY(Integer yCoordinate) {
         this.y = yCoordinate;
     }
 
-    public void setZIndex(Integer zIndex) {
+    public void setZ(Integer zIndex) {
         this.z = zIndex;
     }
 
