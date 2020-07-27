@@ -11,6 +11,7 @@ public class WidgetStorage {
     private ConcurrentHashMap<Long, Widget> widgetMap = new ConcurrentHashMap<>();
     private LayerHelper layerHelper = new LayerHelper();
     private final AtomicLong idCounter = new AtomicLong(1);
+    private final Object mapLocker = new Object();
 
     public Iterable<Widget> getAll() {
         ArrayList<Widget> sortedWidgets = new ArrayList<>(widgetMap.values());
@@ -33,7 +34,9 @@ public class WidgetStorage {
             int nextZIndex = sortedWidgets.get(0).getZ() + 1;
             widget.setZ(nextZIndex);
         } else if (existZIndex(widget.getZ())) {
-            layerHelper.moveWidgets(widget.getZ(), getAll());
+            synchronized (mapLocker) {
+                layerHelper.moveWidgets(widget.getZ(), getAll());
+            }
         }
         widget.setId(id);
         widget.setLastModified();
@@ -64,8 +67,11 @@ public class WidgetStorage {
         }
         widget.setLastModified();
         widgetMap.replace(id, widget);
+
         if (existZIndex(widget.getZ()) && !widget.getZ().equals(existingWidget.getZ())) {
-            layerHelper.moveWidgets(widget.getZ(), getAll());
+            synchronized (mapLocker) {
+                layerHelper.moveWidgets(widget.getZ(), getAll());
+            }
         }
         return true;
     }
