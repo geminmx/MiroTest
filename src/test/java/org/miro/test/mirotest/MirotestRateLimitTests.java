@@ -30,10 +30,10 @@ public class MirotestRateLimitTests {
 
 	@Test
 	public void getAllWidgets_whenRequestsWithinRateLimit_thenAccepted_nextRejected() throws Exception {
-		String uri = "/widgets";
+		String uri = "/test";
 		RequestBuilder request = get(uri).contentType(MediaType.APPLICATION_JSON_VALUE);
 
-		for (int i = 1; i <= Bandwidths.getBucketCapacity(new Pair<>("GET", "/widgets")); i++) {
+		for (int i = 1; i <= Bandwidths.getBucketCapacity(new Pair<>("GET", uri)); i++) {
 			mockMvc.perform(request)
 					.andExpect(status().isOk())
 					.andExpect(header().exists("Rate-Limit-Remaining-Tokens"))
