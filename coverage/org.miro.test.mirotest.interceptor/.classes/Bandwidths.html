@@ -58,10 +58,10 @@
 </td>
 <td class="coverageStat">
   <span class="percent">
-    83,3%
+    94,4%
   </span>
   <span class="absValue">
-    (15/ 18)
+    (17/ 18)
   </span>
 </td>
 </tr>
@@ -97,7 +97,7 @@
 <b class="fc"><i>23</i>&nbsp;            switch (httpRequestParams.getKey()) {</b>
 <i>24</i>&nbsp;                case &quot;GET&quot;:
 <b class="fc"><i>25</i>&nbsp;                    if (httpRequestParams.getValue().matches(&quot;/widgets/[0-9]+&quot;)) {</b>
-<b class="nc"><i>26</i>&nbsp;                        bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.get.widget&quot;));</b>
+<b class="fc"><i>26</i>&nbsp;                        bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.get.widget&quot;));</b>
 <i>27</i>&nbsp;                    } else {
 <b class="fc"><i>28</i>&nbsp;                        bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.get.all&quot;));</b>
 <i>29</i>&nbsp;                    }
@@ -109,7 +109,7 @@
 <b class="fc"><i>35</i>&nbsp;                    bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.put.widget&quot;));</b>
 <b class="fc"><i>36</i>&nbsp;                    break;</b>
 <i>37</i>&nbsp;                case &quot;DELETE&quot;:
-<b class="nc"><i>38</i>&nbsp;                    bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.delete.widget&quot;));</b>
+<b class="fc"><i>38</i>&nbsp;                    bucketCapacity = Integer.parseInt(ApplicationProperties.getProperty(&quot;rate.limit.delete.widget&quot;));</b>
 <i>39</i>&nbsp;                    break;
 <i>40</i>&nbsp;            }
 <i>41</i>&nbsp;        }
@@ -121,7 +121,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-07-27 10:38</div>
+    <div style="float:right;">generated on 2020-07-27 14:18</div>
 </div>
 </body>
 </html>

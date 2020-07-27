@@ -1,14 +1,10 @@
 package org.miro.test.mirotest;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.runner.RunWith;
+import org.miro.test.mirotest.widget.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,14 +13,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.IOException;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import static org.junit.Assert.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = Mirotest.class)
@@ -41,10 +36,15 @@ public class MirotestControllerTests {
         widgetToCreate.setXCoordinate(10);
         widgetToCreate.setYCoordinate(10);
         widgetToCreate.setHeight(1.0);
-        widgetToCreate.setWidth(1.0);
         widgetToCreate.setZIndex(-5);
 
         String inputJson = mapToJson(widgetToCreate);
+        mockMvc.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+                .andExpect(status().isBadRequest());
+        widgetToCreate.setWidth(1.0);
+
+        inputJson = mapToJson(widgetToCreate);
         MvcResult mvcResult = mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
@@ -52,17 +52,36 @@ public class MirotestControllerTests {
         Widget createdWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
         assertEquals(widgetToCreate.getX(), createdWidget.getX());
         assertEquals(widgetToCreate.getY(), createdWidget.getY());
-        assertEquals(widgetToCreate.getZIndex(), createdWidget.getZIndex());
+        assertEquals(widgetToCreate.getZ(), createdWidget.getZ());
         assertEquals(widgetToCreate.getHeight(), createdWidget.getHeight());
         assertEquals(widgetToCreate.getWidth(), createdWidget.getWidth());
         assertNotNull(createdWidget.getLastModified());
         assertNotNull(createdWidget.getId());
 
+        uri = "/widgets/555";
+        mockMvc.perform(get(uri)).andExpect(status().isBadRequest());
+
         uri = "/widgets/" + createdWidget.getId();
+        mockMvc.perform(get(uri)).andExpect(status().isOk());
+        mvcResult = mockMvc.perform(get(uri)).andReturn();
+        Widget readWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
+        assertEquals(createdWidget.getX(), readWidget.getX());
+        assertEquals(createdWidget.getY(), readWidget.getY());
+        assertEquals(createdWidget.getZ(), readWidget.getZ());
+        assertEquals(createdWidget.getHeight(), readWidget.getHeight());
+        assertEquals(createdWidget.getWidth(), readWidget.getWidth());
+        assertEquals(createdWidget.getLastModified(), readWidget.getLastModified());
+        assertEquals(createdWidget.getId(), readWidget.getId());
+
         Widget widgetToUpdate = createdWidget;
         widgetToUpdate.setWidth(15.0);
 
         inputJson = mapToJson(widgetToUpdate);
+
+        uri = "/widgets/555";
+        mockMvc.perform(put(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andExpect(status().isBadRequest());
+        uri = "/widgets/" + createdWidget.getId();
         mvcResult = mockMvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
 
@@ -70,11 +89,16 @@ public class MirotestControllerTests {
         Widget updatedWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
         assertEquals(widgetToUpdate.getX(), updatedWidget.getX());
         assertEquals(widgetToUpdate.getY(), updatedWidget.getY());
-        assertEquals(widgetToUpdate.getZIndex(), updatedWidget.getZIndex());
+        assertEquals(widgetToUpdate.getZ(), updatedWidget.getZ());
         assertEquals(widgetToUpdate.getHeight(), updatedWidget.getHeight());
         assertEquals(widgetToUpdate.getWidth(), updatedWidget.getWidth());
         assertEquals(widgetToUpdate.getId(), updatedWidget.getId());
         assertTrue(widgetToUpdate.getLastModified().before(updatedWidget.getLastModified()));
+
+        uri = "/widgets/555";
+        mockMvc.perform(delete(uri)).andExpect(status().isBadRequest());
+        uri = "/widgets/" + createdWidget.getId();
+        mockMvc.perform(delete(uri)).andExpect(status().isOk());
     }
 
     @Test
@@ -88,8 +112,10 @@ public class MirotestControllerTests {
         widget.setZIndex(-5);
 
         String inputJson = mapToJson(widget);
-        mockMvc.perform(post(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson));
+        for (int i = 0; i < 10; i++) {
+            mockMvc.perform(post(uri)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson));
+        }
         MvcResult mvcResult = mockMvc.perform(get(uri)
                 .accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
@@ -97,7 +123,7 @@ public class MirotestControllerTests {
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
         Widget[] widgets = mapFromJson(content, Widget[].class);
-        assertEquals(1, widgets.length);
+        assertEquals(10, widgets.length);
     }
 
     private String mapToJson(Object obj) throws JsonProcessingException {

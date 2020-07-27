@@ -78,39 +78,35 @@
 <i>4</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
 <i>5</i>&nbsp;import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 <i>6</i>&nbsp;import org.springframework.boot.SpringApplication;
-<i>7</i>&nbsp;import org.springframework.cache.annotation.EnableCaching;
-<i>8</i>&nbsp;import org.springframework.context.annotation.ComponentScan;
-<i>9</i>&nbsp;import org.springframework.context.annotation.Lazy;
-<i>10</i>&nbsp;import org.springframework.scheduling.annotation.EnableScheduling;
-<i>11</i>&nbsp;import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-<i>12</i>&nbsp;import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-<i>13</i>&nbsp;
-<i>14</i>&nbsp;@ComponentScan
-<i>15</i>&nbsp;@EnableAutoConfiguration
-<i>16</i>&nbsp;@EnableScheduling
-<i>17</i>&nbsp;@EnableCaching
-<b class="fc"><i>18</i>&nbsp;public class Mirotest implements WebMvcConfigurer {</b>
+<i>7</i>&nbsp;import org.springframework.context.annotation.ComponentScan;
+<i>8</i>&nbsp;import org.springframework.context.annotation.Lazy;
+<i>9</i>&nbsp;import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+<i>10</i>&nbsp;import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;@ComponentScan
+<i>13</i>&nbsp;@EnableAutoConfiguration
+<b class="fc"><i>14</i>&nbsp;public class Mirotest implements WebMvcConfigurer {</b>
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    @Autowired
+<i>17</i>&nbsp;    @Lazy
+<i>18</i>&nbsp;    private RateLimitInterceptor interceptor;
 <i>19</i>&nbsp;
-<i>20</i>&nbsp;    @Autowired
-<i>21</i>&nbsp;    @Lazy
-<i>22</i>&nbsp;    private RateLimitInterceptor interceptor;
-<i>23</i>&nbsp;
-<i>24</i>&nbsp;    @Override
-<i>25</i>&nbsp;    public void addInterceptors(InterceptorRegistry registry) {
-<b class="fc"><i>26</i>&nbsp;        registry.addInterceptor(interceptor)</b>
-<b class="fc"><i>27</i>&nbsp;                .addPathPatterns(&quot;/**&quot;);</b>
-<b class="fc"><i>28</i>&nbsp;    }</b>
-<i>29</i>&nbsp;
-<i>30</i>&nbsp;    public static void main(String[] args) {
-<b class="nc"><i>31</i>&nbsp;        SpringApplication.run(Mirotest.class, args);</b>
-<b class="nc"><i>32</i>&nbsp;    }</b>
-<i>33</i>&nbsp;}
+<i>20</i>&nbsp;    @Override
+<i>21</i>&nbsp;    public void addInterceptors(InterceptorRegistry registry) {
+<b class="fc"><i>22</i>&nbsp;        registry.addInterceptor(interceptor)</b>
+<b class="fc"><i>23</i>&nbsp;                .addPathPatterns(&quot;/**&quot;);</b>
+<b class="fc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public static void main(String[] args) {
+<b class="nc"><i>27</i>&nbsp;        SpringApplication.run(Mirotest.class, args);</b>
+<b class="nc"><i>28</i>&nbsp;    }</b>
+<i>29</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-07-27 10:38</div>
+    <div style="float:right;">generated on 2020-07-27 14:18</div>
 </div>
 </body>
 </html>

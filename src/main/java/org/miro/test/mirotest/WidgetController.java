@@ -1,9 +1,10 @@
 package org.miro.test.mirotest;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miro.test.mirotest.widget.Widget;
+import org.miro.test.mirotest.widget.WidgetStorage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class WidgetController {
 
-    Map<Long, Widget> widgetMap = new ConcurrentHashMap<>();
-    private final Object widgetMapLocker = new Object();
-    private final AtomicLong idCounter = new AtomicLong();
-    private final LayerHelper layerHelper = new LayerHelper();
+    private WidgetStorage widgetStorage = new WidgetStorage();
 
     public WidgetController() {
     }
@@ -25,8 +23,8 @@ public class WidgetController {
     }
 
     @GetMapping("/widgets")
-    public ResponseEntity<Collection<Widget>> getAllWidgets() {
-        return ResponseEntity.ok(widgetMap.values());
+    public ResponseEntity<Iterable<Widget>> getAllWidgets() {
+        return ResponseEntity.ok(widgetStorage.getAll());
     }
 
     @GetMapping(value = "/widgets", params = {"page", "size"})
@@ -37,70 +35,39 @@ public class WidgetController {
 
     @PostMapping("/widgets")
     public ResponseEntity<Widget> postWidget(@RequestBody Widget newWidget) {
-        long id = idCounter.getAndIncrement();
-        if (newWidget.getZIndex() == null) {
-            newWidget.setZIndex(layerHelper.getMaxZIndex(new ArrayList<>(widgetMap.values())) + 1);
+        if (newWidget.getX() == null
+                || newWidget.getY() == null
+                || newWidget.getHeight() == null
+                || newWidget.getWidth() == null) {
+            return ResponseEntity.badRequest().build();
         }
-        Widget widget = new Widget(
-                id,
-                newWidget.getX(),
-                newWidget.getY(),
-                newWidget.getZIndex(),
-                newWidget.getWidth(),
-                newWidget.getHeight());
-        synchronized (widgetMapLocker) {
-            if (layerHelper.isBusyIndex(newWidget.getZIndex(), new ArrayList<>(widgetMap.values()))) {
-                layerHelper.moveWidgets(newWidget.getZIndex(), new ArrayList<>(widgetMap.values()));
-            }
-        }
-        widgetMap.put(id, widget);
-        return ResponseEntity.ok(widget);
+        long id = widgetStorage.add(newWidget);
+        return ResponseEntity.ok(widgetStorage.getById(id));
     }
 
     @GetMapping("/widgets/{id}")
     public ResponseEntity<Widget> getWidget(@PathVariable long id) {
-        Widget widget = widgetMap.get(id);
+        Widget widget = widgetStorage.getById(id);
         if (widget != null) {
             return ResponseEntity.ok(widget);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @PutMapping("/widgets/{id}")
     public ResponseEntity<Widget> putWidget(@PathVariable long id,
                                             @RequestBody Widget newWidget) {
-        Widget widget = widgetMap.get(id);
-        if (widget != null) {
-            if (newWidget.getZIndex() != null && layerHelper.isBusyIndex(newWidget.getZIndex(), new ArrayList<>(widgetMap.values()))) {
-                layerHelper.moveWidgets(newWidget.getZIndex(), new ArrayList<>(widgetMap.values()));
-            }
-            if (newWidget.getX() != null) {
-                widget.setXCoordinate(newWidget.getX());
-            }
-            if (newWidget.getY() != null) {
-                widget.setYCoordinate(newWidget.getY());
-            }
-            if (newWidget.getZIndex() != null) {
-                widget.setZIndex(newWidget.getZIndex());
-            }
-            if (newWidget.getWidth() != null) {
-                widget.setWidth(newWidget.getWidth());
-            }
-            if (newWidget.getHeight() != null) {
-                widget.setHeight(newWidget.getHeight());
-            }
-            widget.setLastModified();
-            return ResponseEntity.ok(widget);
+        if (widgetStorage.save(id, newWidget)) {
+            return ResponseEntity.ok(widgetStorage.getById(id));
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 
     @DeleteMapping("/widgets/{id}")
-    public ResponseEntity<Widget> deleteWidget(@PathVariable long id) {
-        Widget widget = widgetMap.get(id);
-        if (widget != null) {
-            return ResponseEntity.ok(widgetMap.remove(id));
+    public ResponseEntity deleteWidget(@PathVariable long id) {
+        if (widgetStorage.deleteById(id)) {
+            return ResponseEntity.ok().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        return ResponseEntity.badRequest().build();
     }
 }
