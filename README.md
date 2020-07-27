@@ -9,7 +9,9 @@ It is a Spring boot application, Maven used as a build tool.
 
 Widgets are stored in ConcurrencyHashMap to avoid collisions and to perform all changes atomically.
 
-##Complications
+Coverage html report attached.
+
+## Complications
 
 **1. Pagination.** 
 
