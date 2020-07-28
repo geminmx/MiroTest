@@ -1,20 +1,19 @@
 package org.miro.test.mirotest;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.miro.test.mirotest.widget.Widget;
 import org.miro.test.mirotest.widget.WidgetStorage;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class WidgetController {
 
-    private WidgetStorage widgetStorage = new WidgetStorage();
+    private final WidgetStorage widgetStorage;
 
-    public WidgetController() {
+    @Autowired
+    public WidgetController(WidgetStorage widgetStorage) {
+        this.widgetStorage = widgetStorage;
     }
 
     @GetMapping("/test")
@@ -27,12 +26,6 @@ public class WidgetController {
         return ResponseEntity.ok(widgetStorage.getAll());
     }
 
-    @GetMapping(value = "/widgets", params = {"page", "size"})
-    public ResponseEntity<Collection<Widget>> getPaginatedWidgets(@RequestParam("page") int page,
-                                                                  @RequestParam("size") int size) {
-            return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).build();
-    }
-
     @PostMapping("/widgets")
     public ResponseEntity<Widget> postWidget(@RequestBody Widget newWidget) {
         if (newWidget.getX() == null
@@ -41,8 +34,7 @@ public class WidgetController {
                 || newWidget.getWidth() == null) {
             return ResponseEntity.badRequest().build();
         }
-        long id = widgetStorage.add(newWidget);
-        return ResponseEntity.ok(widgetStorage.getById(id));
+        return ResponseEntity.ok(widgetStorage.add(newWidget));
     }
 
     @GetMapping("/widgets/{id}")
@@ -57,8 +49,9 @@ public class WidgetController {
     @PutMapping("/widgets/{id}")
     public ResponseEntity<Widget> putWidget(@PathVariable long id,
                                             @RequestBody Widget newWidget) {
-        if (widgetStorage.save(id, newWidget)) {
-            return ResponseEntity.ok(widgetStorage.getById(id));
+        Widget widget = widgetStorage.save(id, newWidget);
+        if (widget != null) {
+            return ResponseEntity.ok(widget);
         }
         return ResponseEntity.badRequest().build();
     }

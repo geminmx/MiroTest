@@ -4,8 +4,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.miro.test.mirotest.widget.Widget;
 import org.miro.test.mirotest.widget.WidgetStorage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -27,13 +25,9 @@ public class MirotestStorageTests {
     public void addWidgets() {
         initWidgetList();
         Integer nullZ = null;
-        assertEquals(0L, widgets.add(new Widget(0L, 10, 10, -5, 1.0, 1.0)));
-        assertEquals(1L,widgets.add(new Widget(1L, 10, 10, -2, 1.0, 1.0)));
-        assertEquals(2L,widgets.add(new Widget(2L, 10, 10, -11, 1.0, 1.0)));
-        assertEquals(3L,widgets.add(new Widget(3L, 10, 10, nullZ, 1.0, 1.0)));
-        assertEquals(4L,widgets.add(new Widget(4L, 10, 10, -9, 1.0, 1.0)));
-        assertEquals(5L,widgets.add(new Widget(5L, 10, 10, 17, 1.0, 1.0)));
-        assertEquals(6, widgets.size());
+        assertEquals(0L,(long) widgets.add(new Widget(0L, 10, 10, -5, 1.0, 1.0)).getId());
+        assertEquals(1L,(long) widgets.add(new Widget(1L, 10, 10, -2, 1.0, 1.0)).getId());
+        assertEquals(2, widgets.size());
     }
 
     @Test

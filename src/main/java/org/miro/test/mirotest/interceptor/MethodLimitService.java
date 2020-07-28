@@ -17,19 +17,21 @@ public class MethodLimitService {
     private final Map<Pair<String, String>, Pair<Bucket, Integer>> cache = new ConcurrentHashMap<>();
 
     public Bucket resolveBucket(Pair<String, String> httpRequestParams) {
-        Pair<Bucket, Integer> pair = cache.get(httpRequestParams);
-        if (pair == null) {
-            cache.put(httpRequestParams, new Pair<>(newBucket(httpRequestParams), Bandwidths.getBucketCapacity(httpRequestParams)));
-            return cache.get(httpRequestParams).getKey();
+        return cache.compute(httpRequestParams, this::computeBucket).getKey();
+    }
+
+    private Pair<Bucket, Integer> computeBucket(Pair<String, String> httpRequestParams, Pair<Bucket, Integer> currentBucketPair) {
+        if (currentBucketPair == null) {
+            return new Pair<>(newBucket(httpRequestParams), Bandwidths.getBucketCapacity(httpRequestParams));
         } else {
-            if (pair.getValue() != Bandwidths.getBucketCapacity(httpRequestParams)) {
+            if (currentBucketPair.getValue() != Bandwidths.getBucketCapacity(httpRequestParams)) {
                 Bandwidth newLimit = Bandwidths.getLimit(httpRequestParams);
                 BucketConfiguration newConfiguration = Bucket4j.configurationBuilder()
                         .addLimit(newLimit)
                         .build();
-                pair.getKey().replaceConfiguration(newConfiguration);
+                currentBucketPair.getKey().replaceConfiguration(newConfiguration);
             }
-            return pair.getKey();
+            return currentBucketPair;
         }
     }
 

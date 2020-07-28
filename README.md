@@ -7,7 +7,7 @@ Identifiers of widgets generate automatically, z-Indexes are unique.
 
 It is a Spring boot application, Maven used as a build tool.
 
-Widgets are stored in ConcurrencyHashMap to avoid collisions and to perform all changes atomically.
+Widgets are stored in HashMap. To avoid collisions and to perform all changes atomically used ReentrantReadWriteLock.
 
 Coverage html report attached.
 

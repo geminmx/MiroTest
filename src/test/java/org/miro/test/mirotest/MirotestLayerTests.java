@@ -4,16 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.miro.test.mirotest.widget.Widget;
 import org.miro.test.mirotest.widget.WidgetStorage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import static org.junit.Assert.*;
 
@@ -36,7 +28,6 @@ public class MirotestLayerTests {
     @Test
     public void checkBusyIndexes() {
         initWidgetList();
-        LayerHelper layerHelper = new LayerHelper();
         assertTrue(widgets.existZIndex(widgets.getById(0L).getZ()));
         assertTrue(widgets.existZIndex(widgets.getById(1L).getZ()));
         assertTrue(widgets.existZIndex(widgets.getById(2L).getZ()));
@@ -50,11 +41,13 @@ public class MirotestLayerTests {
     @Test
     public void moveWidgets() {
         initWidgetList();
-        LayerHelper layerHelper = new LayerHelper();
-        layerHelper.moveWidgets(-11, widgets.getAll());
-        layerHelper.moveWidgets(-9, widgets.getAll());
+        widgets.add(new Widget(10, 10, -11, 1.0, 1.0));
+        widgets.add(new Widget(10, 10, -9, 1.0, 1.0));
+        widgets.save(0L, new Widget(1, 1, 20, 1.0, 1.0));
+        Widget widget = widgets.add(new Widget(1, 1, null, 1.0, 1.0));
         assertEquals(new Integer(-10), widgets.getById(2L).getZ());
         assertEquals(new Integer(-8), widgets.getById(3L).getZ());
         assertEquals(new Integer(-7), widgets.getById(4L).getZ());
+        assertEquals(new Integer(21), widgets.getById(widget.getId()).getZ());
     }
 }

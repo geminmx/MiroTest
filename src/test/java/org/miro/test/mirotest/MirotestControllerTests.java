@@ -30,7 +30,7 @@ public class MirotestControllerTests {
     private MockMvc mockMvc;
 
     @Test
-    public void crudWidget() throws Exception {
+    public void createWidget() throws Exception {
         String uri = "/widgets";
         Widget widgetToCreate = new Widget();
         widgetToCreate.setX(10);
@@ -57,8 +57,17 @@ public class MirotestControllerTests {
         assertEquals(widgetToCreate.getWidth(), createdWidget.getWidth());
         assertNotNull(createdWidget.getLastModified());
         assertNotNull(createdWidget.getId());
+    }
 
-        uri = "/widgets/555";
+    @Test
+    public void readWidget() throws Exception {
+        String uri = "/widgets";
+        Widget widgetToCreate = new Widget(10, 10, -5, 1.0, 2.0);
+        String inputJson = mapToJson(widgetToCreate);
+        MvcResult mvcResult = mockMvc.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+        Widget createdWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
+        uri = "/widgets/" + (createdWidget.getId() + 1);
         mockMvc.perform(get(uri)).andExpect(status().isBadRequest());
 
         uri = "/widgets/" + createdWidget.getId();
@@ -72,19 +81,25 @@ public class MirotestControllerTests {
         assertEquals(createdWidget.getWidth(), readWidget.getWidth());
         assertEquals(createdWidget.getLastModified(), readWidget.getLastModified());
         assertEquals(createdWidget.getId(), readWidget.getId());
+    }
+
+    @Test
+    public void updateWidget() throws Exception {
+        String uri = "/widgets";
+        Widget widgetToCreate = new Widget(10, 10, -5, 1.0, 2.0);
+        String inputJson = mapToJson(widgetToCreate);
+        MvcResult mvcResult = mockMvc.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+        Widget createdWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
+        uri = "/widgets/" + (createdWidget.getId() + 1);
+        mockMvc.perform(put(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andExpect(status().isBadRequest());
 
         Widget widgetToUpdate = createdWidget;
+        uri = "/widgets/" + widgetToUpdate.getId();
         widgetToUpdate.setWidth(15.0);
-
         inputJson = mapToJson(widgetToUpdate);
-
-        uri = "/widgets/555";
-        mockMvc.perform(put(uri)
-                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andExpect(status().isBadRequest());
-        uri = "/widgets/" + createdWidget.getId();
         mvcResult = mockMvc.perform(put(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-
         assertEquals(200, mvcResult.getResponse().getStatus());
         Widget updatedWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
         assertEquals(widgetToUpdate.getX(), updatedWidget.getX());
@@ -94,9 +109,19 @@ public class MirotestControllerTests {
         assertEquals(widgetToUpdate.getWidth(), updatedWidget.getWidth());
         assertEquals(widgetToUpdate.getId(), updatedWidget.getId());
         assertTrue(widgetToUpdate.getLastModified().before(updatedWidget.getLastModified()));
+    }
 
-        uri = "/widgets/555";
+    @Test
+    public void deleteWidget() throws Exception {
+        String uri = "/widgets";
+        Widget widgetToCreate = new Widget(10, 10, -5, 1.0, 2.0);
+        String inputJson = mapToJson(widgetToCreate);
+        MvcResult mvcResult = mockMvc.perform(post(uri)
+                .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
+        Widget createdWidget = mapFromJson(mvcResult.getResponse().getContentAsString(), Widget.class);
+        uri = "/widgets/" + (createdWidget.getId() + 1);
         mockMvc.perform(delete(uri)).andExpect(status().isBadRequest());
+
         uri = "/widgets/" + createdWidget.getId();
         mockMvc.perform(delete(uri)).andExpect(status().isOk());
     }

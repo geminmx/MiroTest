@@ -85,28 +85,28 @@
 <i>11</i>&nbsp;
 <i>12</i>&nbsp;@ComponentScan
 <i>13</i>&nbsp;@EnableAutoConfiguration
-<b class="fc"><i>14</i>&nbsp;public class Mirotest implements WebMvcConfigurer {</b>
+<i>14</i>&nbsp;public class Mirotest implements WebMvcConfigurer {
 <i>15</i>&nbsp;
 <i>16</i>&nbsp;    @Autowired
-<i>17</i>&nbsp;    @Lazy
+<b class="fc"><i>17</i>&nbsp;    @Lazy</b>
 <i>18</i>&nbsp;    private RateLimitInterceptor interceptor;
 <i>19</i>&nbsp;
 <i>20</i>&nbsp;    @Override
 <i>21</i>&nbsp;    public void addInterceptors(InterceptorRegistry registry) {
-<b class="fc"><i>22</i>&nbsp;        registry.addInterceptor(interceptor)</b>
-<b class="fc"><i>23</i>&nbsp;                .addPathPatterns(&quot;/**&quot;);</b>
-<b class="fc"><i>24</i>&nbsp;    }</b>
-<i>25</i>&nbsp;
-<i>26</i>&nbsp;    public static void main(String[] args) {
-<b class="nc"><i>27</i>&nbsp;        SpringApplication.run(Mirotest.class, args);</b>
-<b class="nc"><i>28</i>&nbsp;    }</b>
+<i>22</i>&nbsp;        registry.addInterceptor(interceptor)
+<i>23</i>&nbsp;                .addPathPatterns(&quot;/**&quot;);
+<i>24</i>&nbsp;    }
+<b class="fc"><i>25</i>&nbsp;</b>
+<b class="fc"><i>26</i>&nbsp;    public static void main(String[] args) {</b>
+<b class="fc"><i>27</i>&nbsp;        SpringApplication.run(Mirotest.class, args);</b>
+<i>28</i>&nbsp;    }
 <i>29</i>&nbsp;}
 </div>
 </div>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-07-28 02:42</div>
+    <div style="float:right;">generated on 2020-07-29 03:49</div>
 </div>
 </body>
 </html>

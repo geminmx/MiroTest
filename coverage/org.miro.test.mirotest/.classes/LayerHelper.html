@@ -78,7 +78,7 @@
 <i>4</i>&nbsp;
 <b class="fc"><i>5</i>&nbsp;public class LayerHelper {</b>
 <i>6</i>&nbsp;
-<i>7</i>&nbsp;    public synchronized void moveWidgets(Integer busyZIndex, Iterable&lt;Widget&gt; widgetList) {
+<i>7</i>&nbsp;    public void moveWidgets(Integer busyZIndex, Iterable&lt;Widget&gt; widgetList) {
 <b class="fc"><i>8</i>&nbsp;        for (Widget widget: widgetList) {</b>
 <b class="fc"><i>9</i>&nbsp;            if (widget.getZ().equals(busyZIndex)) {</b>
 <b class="fc"><i>10</i>&nbsp;                widget.setZ(busyZIndex + 1);</b>
@@ -92,7 +92,7 @@
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2020-07-28 02:42</div>
+    <div style="float:right;">generated on 2020-07-29 01:12</div>
 </div>
 </body>
 </html>

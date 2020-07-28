@@ -2,14 +2,11 @@ package org.miro.test.mirotest;
 
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import javafx.util.Pair;
 import org.junit.Test;
-import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.miro.test.mirotest.interceptor.Bandwidths;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +26,7 @@ public class MirotestRateLimitTests {
 	private MockMvc mockMvc;
 
 	@Test
-	public void getAllWidgets_whenRequestsWithinRateLimit_thenAccepted_nextRejected() throws Exception {
+	public void testMethod_whenRequestsWithinRateLimit_thenAccepted_nextRejected() throws Exception {
 		String uri = "/test";
 		RequestBuilder request = get(uri).contentType(MediaType.APPLICATION_JSON_VALUE);
 

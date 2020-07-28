@@ -21,6 +21,25 @@ public class Widget {
         this.lastModified = new Date();
     }
 
+    public Widget(Integer x, Integer y, Integer z, Double width, Double height) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.width = width;
+        this.height = height;
+        this.lastModified = new Date();
+    }
+
+    public Widget(Widget widget) {
+        this.id = widget.getId();
+        this.x = widget.getX();
+        this.y = widget.getY();
+        this.z = widget.getZ();
+        this.width = widget.getWidth();
+        this.height = widget.getHeight();
+        this.lastModified = widget.getLastModified();
+    }
+
     public Long getId() {
         return id;
     }
